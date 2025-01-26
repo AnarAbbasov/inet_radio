@@ -1,4 +1,8 @@
-#include <VS1053.h> 				
+#include <VS1053Driver.h>
+
+
+
+
 // include VS1053 library
 #include <ESP8266WiFi.h> 			
 // include ESP8266WiFi library
@@ -14,14 +18,14 @@ int volPin = D4;
 // station and volume
 WiFiClient client; 				
 // associate client and library
-char ssid[] = "xxxx"; 			
+char ssid[] = "Netzwerk"; 			
 // change xxxx to Wi-Fi ssid
-char password[] = "xxxx"; 			
+char password[] = "TedMiller@2023"; 			
 // change xxxx to Wi-Fi password
 const int maxStat = 4; 			
 // number of radio stations
 String stationName[] = {"1940 UK", "Bayern3", "ClassicFM", "BBC4"};
-char * host[maxStat] = {"1940sradio1.co.uk", // station host
+char * host[maxStat] = {"h14.myradiostream.com/30454/listen.mp3", // station host
 "streams.br.de",
 "media-ice.musicradio.com",
 "bbcmedia.ic.llnwd.net"};
@@ -75,13 +79,15 @@ station = newStation;
 // display updated station name
 Serial.print("connecting to CH"); Serial.print(station);
 Serial.print(" ");Serial.println(stationName[station]);
-if(client.connect(host[station], port[station]))
+if(client.connect(host[station], port[station]));
 { 				
 // connect to radio station URL
 client.println(String("GET ")+ path[station] + " HTTP/1.1");
+Serial.println(String("GET ")+ path[station]);
 client.println(String("Host: ") + host[station]);
 client.println("Connection: close");
-client.println(); 		
+client.println(); 	
+Serial.print("connected"); 
 // new line is required
 }
 }
@@ -97,6 +103,7 @@ decoder.setVolume(volume);
 if(client.available() > 0)
 // when audio data available
 {				
+  Serial.print("playing ");
 // decode data 32 bytes at a time
 uint8_t bytesread = client.read(mp3buff, 32);
 decoder.playChunk(mp3buff, bytesread);
