@@ -1,5 +1,7 @@
 #include <VS1053Driver.h>
 
+//#include <VS1053.h>
+
 
 
 
@@ -24,18 +26,18 @@ char password[] = "TedMiller@2023";
 // change xxxx to Wi-Fi password
 const int maxStat = 4; 			
 // number of radio stations
-String stationName[] = {"1940 UK", "Bayern3", "ClassicFM", "BBC4"};
-char * host[maxStat] = {"h14.myradiostream.com/30454/listen.mp3", // station host
-"streams.br.de",
+String stationName[] = {"somafm", "slayradio2", "ClassicFM", "slayradio4"};
+char * host[maxStat] = {"ice2.somafm.com", // station host
+"ice2.somafm.com",
 "media-ice.musicradio.com",
 "bbcmedia.ic.llnwd.net"};
-char * path[maxStat] = {"/stream/1/",
-"/bayern3_2.m3u",
+char * path[maxStat] = {"/synphaera-64-aac",
+"/synphaera-128-aac",
 "/ClassicFMMP3",
-"/stream/bbcmedia_radio4fm_mf_q"};
-int port[] = {8100,80,80,80}; 		
+"/synphaera-32-aac"};
+int port[] = {80,80,80,80}; 		
 // default station port is 80
-unsigned char mp3buff[32]; 			
+unsigned char mp3buff[200]; 			
 // VS1053 loads data in 32 bytes
 int station = 0;
 int volume = 0; 				
@@ -103,10 +105,10 @@ decoder.setVolume(volume);
 if(client.available() > 0)
 // when audio data available
 {				
-  Serial.print("playing ");
+ 
 // decode data 32 bytes at a time
-uint8_t bytesread = client.read(mp3buff, 32);
-decoder.playChunk(mp3buff, bytesread);
+uint8_t bytesread = client.read(mp3buff, 200);
+decoder.writeAudio(mp3buff, bytesread);
 }
 }
 
