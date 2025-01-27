@@ -1,4 +1,6 @@
-#include <VS1053.h>
+#include <VS1053Driver.h>
+
+
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 
@@ -23,7 +25,7 @@ char * path[maxStat] = {"/antennfm",
                         "/ClassicFMMP3",
                         "/mediamugam"};
 int port[] = {443, 443, 80, 443};
-unsigned char mp3buff[120];
+unsigned char mp3buff[12000];
 int station = 0;
 int volume = 0;
 volatile int newStation = 0;
@@ -67,10 +69,12 @@ void loop() {
     }
     if (client.available() > 0) {
         
-       uint8_t bytesread= client.read(mp3buff, 120);
-        Serial.println(bytesread);
+       uint8_t bytesread1= client.read(mp3buff, 200);
+       uint8_t bytesread2= client.read(mp3buff+bytesread1, 200);
+        uint8_t bytesread3= client.read(mp3buff+bytesread1+bytesread2, 200);
+        //Serial.println(bytesread1+bytesread2);
         
-        decoder.playChunk(mp3buff, bytesread);
+        decoder.writeAudio(mp3buff, bytesread1+bytesread2+bytesread3);
         
         
     }
